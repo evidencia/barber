@@ -1,6 +1,8 @@
 "use client"
 
+import SideMenu from '@/app/_components/side-menu'
 import { Button } from '@/app/_components/ui/button'
+import { Sheet, SheetContent, SheetTrigger } from '@/app/_components/ui/sheet'
 import { Barbershop } from '@prisma/client'
 import { ChevronLeft, MapPin, Menu, Star } from 'lucide-react'
 import Image from 'next/image'
@@ -28,9 +30,18 @@ export default function BarbershopInfo({ barbershop }: BarbershopInfoProps) {
           <ChevronLeft />
         </Button>
 
-        <Button size="icon" variant="outline" className='z-50 absolute top-4 right-4'>
-          <Menu />
-        </Button>
+        <Sheet>
+          <SheetTrigger asChild>
+            <Button size="icon" variant="outline" className='z-50 absolute top-4 right-4'>
+              <Menu />
+            </Button>
+          </SheetTrigger>
+
+          <SheetContent className='p-0'>
+            <SideMenu />
+          </SheetContent>
+        </Sheet>
+
         <Image 
           src={barbershop.imageUrl} 
           alt={barbershop.name} 
