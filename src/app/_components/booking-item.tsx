@@ -4,6 +4,7 @@ import { Badge } from './ui/badge'
 import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar'
 
 export default function BookingItem() {
+
   return (
     <Card>
       <CardContent className='flex justify-between p-5 py-0'>
