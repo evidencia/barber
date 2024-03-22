@@ -39,13 +39,13 @@ export default function ServiceItem({ service, isAuthenticated, barbershop }: Se
       return
     }
     const refreshAwailableHours = async () => {
-      const _dayBookings = await getDayBookings(date)
+      const _dayBookings = await getDayBookings(barbershop.id, date)
 
       setDayBookings(_dayBookings)
     }
 
     refreshAwailableHours()
-  }, [date])
+  }, [date, barbershop.id])
 
   const handleDateClink = (date: Date | undefined) => {
     setDate(date)
