@@ -6,11 +6,13 @@ import { Card, CardContent } from '@/app/_components/ui/card'
 import { Sheet, SheetContent, SheetFooter, SheetHeader, SheetTitle, SheetTrigger } from '@/app/_components/ui/sheet'
 import { Barbershop, Service } from '@prisma/client'
 import { ptBR } from 'date-fns/locale'
-import { signIn } from 'next-auth/react'
+import { signIn, useSession } from 'next-auth/react'
 import Image from 'next/image'
 import { useMemo, useState } from 'react'
 import { generateDayTimeList } from '../_helpers/hours'
-import { format } from 'date-fns'
+import { format, setHours, setMinutes } from 'date-fns'
+import { saveBooking } from '../_actions/save-booking'
+import { Loader2 } from 'lucide-react'
 
 interface ServiceItemProps {
   service: Service
@@ -19,8 +21,11 @@ interface ServiceItemProps {
 }
 
 export default function ServiceItem({ service, isAuthenticated, barbershop }: ServiceItemProps) {
+  const  { data } = useSession()
+
   const [date, setDate] = useState<Date | undefined>(undefined)
   const [hour, setHour] = useState<string | undefined>()
+  const [submitIsLoading, setSubmitIsLoading] = useState(false)
 
   const handleDateClink = (date: Date | undefined) => {
     setDate(date)
@@ -34,6 +39,31 @@ export default function ServiceItem({ service, isAuthenticated, barbershop }: Se
   const handleBookingClick = () => {
     if (!isAuthenticated) {
       return signIn('google')
+    }
+  }
+
+  const handleBookingSubmit = async () => {
+    setSubmitIsLoading(true)
+
+    try{
+      if (!date || !hour || !data?.user) {
+        return
+      }
+
+      const dateHour = Number(hour.split(':')[0])
+      const dateMinutes = Number(hour.split(':')[1])
+      const newDate = setMinutes(setHours(date, dateHour), dateMinutes)
+
+      await saveBooking({
+        barbershopId: barbershop.id,
+        serviceId: service.id,
+        date: newDate.toISOString(),
+        userId: (data?.user as any).id
+      })
+    } catch(err) {
+      console.log(err)
+    } finally {
+      setSubmitIsLoading(false)
     }
   }
 
@@ -172,7 +202,13 @@ export default function ServiceItem({ service, isAuthenticated, barbershop }: Se
                   </div>
 
                   <SheetFooter className='px-5 pb-6'>
-                    <Button disabled={!date || !hour}>Confirma reserva</Button>
+                    <Button 
+                      onClick={handleBookingSubmit}
+                      disabled={(!date || !hour) || submitIsLoading}
+                    >
+                      { submitIsLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                      Confirma reserva
+                    </Button>
                   </SheetFooter>
                 </SheetContent>
               </Sheet>
