@@ -4,7 +4,7 @@ import { Card, CardContent } from './ui/card'
 import Image from 'next/image'
 import { Button } from './ui/button'
 import { Menu } from 'lucide-react'
-import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from './ui/sheet'
+import { Sheet, SheetContent, SheetTrigger } from './ui/sheet'
 
 import SideMenu from './side-menu'
 
