@@ -91,7 +91,7 @@ export default function ServiceItem({ service, isAuthenticated, barbershop }: Se
         }),
         action: {
           label: "Visualizar",
-          onClick: () => router.push('bookings'),
+          onClick: () => router.push('/bookings'),
         },
       })
 
